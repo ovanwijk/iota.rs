@@ -5,7 +5,7 @@ use tokio::prelude::Future;
 /// Store transactions into the local storage.
 /// The trytes to be used for this call are
 /// returned by attachToTangle.
-pub(crate) fn store_transactions(
+pub fn store_transactions(
     client: &Client,
     uri: &str,
     trytes: &[String],

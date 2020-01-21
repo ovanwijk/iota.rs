@@ -36,21 +36,21 @@ impl<'a, 'b> Default for PrepareTransfersOptions<'a, 'b> {
 
 /// AddRemainderOptions
 #[derive(Clone, Debug, PartialEq)]
-pub(crate) struct AddRemainderOptions<'a, 'b, 'c, 'd> {
+pub struct AddRemainderOptions<'a, 'b, 'c, 'd> {
     /// The tryte-encoded seed. It should be noted that this seed is not transferred.
-    pub(crate) seed: &'a str,
+    pub seed: &'a str,
     /// The tag to add to each bundle entry
-    pub(crate) tag: &'b str,
+    pub tag: &'b str,
     /// The address used for sending the remainder value (of the last input)
-    pub(crate) remainder_address: Option<&'c str>,
+    pub remainder_address: Option<&'c str>,
     /// The signature fragments (message), used for signing. Should be 2187 characters long, can be padded with 9s.
-    pub(crate) signature_fragments: Vec<String>,
+    pub signature_fragments: Vec<String>,
     /// Check if hmac is added
-    pub(crate) added_hmac: bool,
+    pub added_hmac: bool,
     /// Optional key to use if you want to hmac the transfers
-    pub(crate) hmac_key: Option<&'d str>,
+    pub hmac_key: Option<&'d str>,
     /// Security to use when generating addresses (1-3)
-    pub(crate) security: usize,
+    pub security: usize,
 }
 
 impl<'a> Client<'a> {

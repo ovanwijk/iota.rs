@@ -69,7 +69,7 @@ const RC: [u64; 24] = [
 
 #[allow(unused_assignments)]
 /// keccak-f[1600]
-pub(crate) fn keccakf(a: &mut [u64; PLEN]) {
+pub fn keccakf(a: &mut [u64; PLEN]) {
     for rc in RC.iter().take(24) {
         let mut array: [u64; 5] = [0; 5];
 
@@ -153,7 +153,7 @@ const PLEN: usize = 25;
 
 /// This structure should be used to create keccak/sha3 hash.
 #[derive(Clone, Copy)]
-pub(crate) struct Keccak {
+pub struct Keccak {
     a: [u64; PLEN],
     offset: usize,
     rate: usize,
@@ -162,11 +162,11 @@ pub(crate) struct Keccak {
 
 macro_rules! impl_constructor {
     ($name:ident, $alias:ident, $bits:expr, $delim:expr) => {
-        pub(crate) fn $name() -> Keccak {
+        pub fn $name() -> Keccak {
             Keccak::new(200 - $bits / 4, $delim)
         }
 
-        pub(crate) fn $alias(data: &[u8], result: &mut [u8]) {
+        pub fn $alias(data: &[u8], result: &mut [u8]) {
             let mut keccak = Keccak::$name();
             keccak.update(data);
             keccak.finalize(result);
@@ -176,7 +176,7 @@ macro_rules! impl_constructor {
 
 macro_rules! impl_global_alias {
     ($alias:ident, $size:expr) => {
-        pub(crate) fn $alias(data: &[u8]) -> [u8; $size / 8] {
+        pub fn $alias(data: &[u8]) -> [u8; $size / 8] {
             let mut result = [0u8; $size / 8];
             Keccak::$alias(data, &mut result);
             result
@@ -196,7 +196,7 @@ impl_global_alias!(sha3_384, 384);
 impl_global_alias!(sha3_512, 512);
 
 impl Keccak {
-    pub(crate) fn new(rate: usize, delim: u8) -> Keccak {
+    pub fn new(rate: usize, delim: u8) -> Keccak {
         Keccak {
             a: [0; PLEN],
             offset: 0,
@@ -224,16 +224,16 @@ impl Keccak {
         unsafe { &mut *(&mut self.a as *mut [u64; 25] as *mut [u8; 200]) }
     }
 
-    pub(crate) fn update(&mut self, input: &[u8]) {
+    pub fn update(&mut self, input: &[u8]) {
         self.absorb(input);
     }
 
     #[inline]
-    pub(crate) fn keccakf(&mut self) {
+    pub fn keccakf(&mut self) {
         keccakf(&mut self.a);
     }
 
-    pub(crate) fn finalize(mut self, output: &mut [u8]) {
+    pub fn finalize(mut self, output: &mut [u8]) {
         self.pad();
 
         // apply keccakf
@@ -244,7 +244,7 @@ impl Keccak {
     }
 
     // Absorb input
-    pub(crate) fn absorb(&mut self, input: &[u8]) {
+    pub fn absorb(&mut self, input: &[u8]) {
         //first foldp
         let mut ip = 0;
         let mut l = input.len();
@@ -264,7 +264,7 @@ impl Keccak {
         self.offset = offset + l;
     }
 
-    pub(crate) fn pad(&mut self) {
+    pub fn pad(&mut self) {
         let offset = self.offset;
         let rate = self.rate;
         let delim = self.delim;
@@ -273,13 +273,13 @@ impl Keccak {
         aa[rate - 1] ^= 0x80;
     }
 
-    pub(crate) fn fill_block(&mut self) {
+    pub fn fill_block(&mut self) {
         self.keccakf();
         self.offset = 0;
     }
 
     // squeeze output
-    pub(crate) fn squeeze(&mut self, output: &mut [u8]) {
+    pub fn squeeze(&mut self, output: &mut [u8]) {
         // second foldp
         let mut op = 0;
         let mut l = output.len();
@@ -294,7 +294,7 @@ impl Keccak {
     }
 
     #[inline]
-    pub(crate) fn xof(mut self) -> XofReader {
+    pub fn xof(mut self) -> XofReader {
         self.pad();
 
         keccakf(&mut self.a);
@@ -306,13 +306,13 @@ impl Keccak {
     }
 }
 
-pub(crate) struct XofReader {
+pub struct XofReader {
     keccak: Keccak,
     offset: usize,
 }
 
 impl XofReader {
-    pub(crate) fn squeeze(&mut self, output: &mut [u8]) {
+    pub fn squeeze(&mut self, output: &mut [u8]) {
         // second foldp
         let mut op = 0;
         let mut l = output.len();

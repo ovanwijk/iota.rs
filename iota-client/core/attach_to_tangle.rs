@@ -57,7 +57,7 @@ impl<'a, 'b, 'c> Default for AttachOptions<'a, 'b, 'c> {
 /// * `branch_transaction` - branch transaction to confirm
 /// * `min_weight_magnitude` - Difficulty of PoW
 /// * `trytes` - tryes to use for PoW
-pub(crate) fn attach_to_tangle(
+pub fn attach_to_tangle(
     client: &Client,
     uri: &str,
     options: AttachOptions<'_, '_, '_>,
